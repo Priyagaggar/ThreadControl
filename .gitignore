@@ -1,0 +1,17 @@
+# Internal build/session notes — not needed in public repo
+BUILD_INFO.txt
+VERSION_CHECK.txt
+
+# Internal agent rules and dev session notes — contains client-specific info
+.agents/
+
+# Cloudflare local dev (if ever used)
+.dev.vars
+.wrangler/
+
+# Node modules (if any tooling installed locally)
+node_modules/
+
+# OS files
+.DS_Store
+Thumbs.db

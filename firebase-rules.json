@@ -1,0 +1,221 @@
+{
+  "rules": {
+    ".read": false,
+    ".write": false,
+    "tc": {
+      "users": {
+        ".read": false,
+        ".write": false
+      },
+      "stageEntries": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        ".indexOn": [
+          "startTime",
+          "_lotKey",
+          "lotId",
+          "_updatedAt"
+        ]
+      },
+      "dyeLots": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        ".indexOn": [
+          "createdAt",
+          "_updatedAt"
+        ]
+      },
+      "windEntries": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        ".indexOn": [
+          "startTime",
+          "dyeLotId",
+          "_updatedAt"
+        ]
+      },
+      "packEntries": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        ".indexOn": [
+          "timestamp",
+          "dyeLotId",
+          "_updatedAt"
+        ]
+      },
+      "dispatches": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        ".indexOn": [
+          "timestamp",
+          "dyeLotId",
+          "_updatedAt"
+        ]
+      },
+      "lots": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        ".indexOn": [
+          "date",
+          "_updatedAt"
+        ]
+      },
+      "archive": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        "dyeLots": {
+          ".indexOn": [
+            "createdAt"
+          ]
+        },
+        "windEntries": {
+          ".indexOn": [
+            "startTime",
+            "dyeLotId"
+          ]
+        },
+        "packEntries": {
+          ".indexOn": [
+            "timestamp",
+            "dyeLotId"
+          ]
+        },
+        "dispatches": {
+          ".indexOn": [
+            "timestamp",
+            "dyeLotId"
+          ]
+        },
+        "lots": {
+          ".indexOn": [
+            "date"
+          ]
+        },
+        "stageEntries": {
+          ".indexOn": [
+            "startTime",
+            "lotId"
+          ]
+        }
+      },
+      "$other": {
+        ".read": false,
+        ".write": false
+      },
+      "masters": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      },
+      "parties": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      },
+      "lotSummaries": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      },
+      "dyeLotSummaries": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      },
+      "partySummaries": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      },
+      "orderSummaries": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      },
+      "partyOrders": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      },
+      "deleteRequests": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      },
+      "lotFlags": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      },
+      "editLog": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      },
+      "rmEditLog": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      },
+      "voidLog": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      },
+      "deadStock": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      },
+      "recycleStock": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      },
+      "scrapLog": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      },
+      "indexWriteFailures": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      },
+      "triggerCallFailures": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      },
+      "agingThresholds": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      },
+      "lotToDyeLots": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      },
+      "residualLog": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        ".indexOn": [
+          "lotId"
+        ]
+      },
+      "residualStock": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      },
+      "rmReturnLog": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        ".indexOn": [
+          "lotId"
+        ]
+      },
+      "dyeEntries": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      },
+      "dyeBatches": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      }
+    },
+    "backups": {
+      ".read": "auth != null",
+      ".write": false
+    },
+    "backupStatus": {
+      ".read": "auth != null",
+      ".write": "auth != null"
+    },
+    "restoreLog": {
+      ".read": "auth != null",
+      ".write": false
+    }
+  }
+}
