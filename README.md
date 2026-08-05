@@ -6,6 +6,8 @@
 
 Track every gram of yarn from raw material to customer dispatch.
 
+> 🔒 **Deployment Note:** Live environments (production and staging) are private client systems and are not publicly accessible.
+
 ![Cloudflare Workers](https://img.shields.io/badge/Cloudflare-Workers-F38020?style=for-the-badge&logo=cloudflare&logoColor=white)
 ![Firebase](https://img.shields.io/badge/Firebase-Realtime_DB-FFCA28?style=for-the-badge&logo=firebase&logoColor=black)
 ![JavaScript](https://img.shields.io/badge/JavaScript-Vanilla_JS-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black)
