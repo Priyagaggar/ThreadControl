@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🧵 ThreadControl v2
+# 🧵 ThreadControl
 
 **Textile Production ERP — Built for the Factory Floor**
 
