@@ -166,4 +166,4 @@ Neither step triggers the other.
 
 ## 📄 License
 
-Private project. All rights reserved.
+Code shared for portfolio purposes. Live production systems and client data remain private and confidential.
