@@ -110,13 +110,23 @@
         ".read": "auth != null",
         ".write": "auth != null"
       },
-      "lotSummaries": {
+      "archiveLastUpdated": {
         ".read": "auth != null",
         ".write": "auth != null"
       },
+      "lotSummaries": {
+        ".read": "auth != null",
+        ".write": "auth != null",
+        ".indexOn": [
+          "_updatedAt"
+        ]
+      },
       "dyeLotSummaries": {
         ".read": "auth != null",
-        ".write": "auth != null"
+        ".write": "auth != null",
+        ".indexOn": [
+          "_updatedAt"
+        ]
       },
       "partySummaries": {
         ".read": "auth != null",
@@ -138,6 +148,14 @@
         ".read": "auth != null",
         ".write": "auth != null"
       },
+      "dyeLotFlags": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      },
+      "entryFlags": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      },
       "editLog": {
         ".read": "auth != null",
         ".write": "auth != null"
@@ -155,6 +173,10 @@
         ".write": "auth != null"
       },
       "recycleStock": {
+        ".read": "auth != null",
+        ".write": "auth != null"
+      },
+      "recycleSoft": {
         ".read": "auth != null",
         ".write": "auth != null"
       },

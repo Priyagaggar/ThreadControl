@@ -22,3 +22,7 @@ directory = "./assets"
 
 [env.staging.triggers]
 crons = ["0 2 * * *"]
+
+[[env.staging.r2_buckets]]
+binding = "BACKUP_BUCKET"
+bucket_name = "threadcontrol-staging-backups"
