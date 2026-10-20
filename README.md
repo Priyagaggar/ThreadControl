@@ -47,6 +47,14 @@ At every stage — weight, cones, and bags are logged, approved, and reflected i
 | 🌐 **Dual Environments** | Prod + staging auto-detected from hostname, zero shared data |
 | 💾 **Daily Backups** | Automatic daily snapshots to Cloudflare R2 |
 | 📈 **Analytics & Reports** | Throughput trends, machine/worker performance, grade analysis |
+| 🚩 **Flag System** | Manual + automatic flags per lot/entry — auto-clears when risk resolves |
+| 🔁 **Reassign Source** | Move partial amounts between dye lot sources with live balance preview |
+| ↩️ **Undo** | Undo any edit or reassign — with downstream impact check before proceeding |
+| 🧩 **Dye Split** | Split a dye lot into good/recycle portions with downstream safety warnings |
+| 🛡️ **Login Rate Limiter** | Escalating lockouts, role-based strictness, Turnstile CAPTCHA, 30-day memory |
+| 🍪 **HttpOnly Session Token** | Session token stored in HttpOnly cookie — never readable by JavaScript |
+| 🔗 **CORS Hardened** | Requests accepted only from the app's own two real domains |
+| 🔎 **Masters Integrity Scan** | Detects values used in real records but missing from Masters — with one-click restore |
 
 ---
 
@@ -54,10 +62,10 @@ At every stage — weight, cones, and bags are logged, approved, and reflected i
 
 | Layer | Technology |
 |---|---|
-| ⚙️ Backend | Cloudflare Workers (edge, serverless, ~8,000 lines) |
+| ⚙️ Backend | Cloudflare Workers (edge, serverless) |
 | 🗃️ Database | Firebase Realtime Database |
 | 💾 Storage | Cloudflare R2 (daily backups) |
-| 🖥️ Frontend | Vanilla JS + HTML + CSS (no framework) |
+| 🖥️ Frontend | Vanilla JS + HTML + CSS (no framework, modular ES modules) |
 | 📦 Deploy | Wrangler CLI |
 
 ---
@@ -70,7 +78,7 @@ ThreadControl/
 ├── 📄 worker.js                  # Cloudflare Worker — entire backend
 ├── ⚙️  wrangler.toml              # Cloudflare deploy config (prod + staging)
 ├── 🔒 firebase-rules.json        # Firebase security rules
-├── 🧪 tc_predeploy_check.py      # 99+ automated pre-deploy checks
+├── 🧪 tc_predeploy_check.py      # 666-check, 6-layer pre-deploy verification suite
 ├── 🖥️  tc_smoke_test.js           # Playwright end-to-end browser test
 │
 └── 📂 assets/
@@ -78,9 +86,40 @@ ThreadControl/
     ├── 🎨 style.css              # Design system (dark/light theme)
     ├── ⚡ sw.js                  # Service Worker (PWA / offline)
     └── 📂 js/
-        ├── core.js               # Firebase init, State, data loading
-        ├── pages.js              # All UI rendering and page logic
-        └── shared-balances.js    # Single source of truth for balance math
+        ├── core.js               # Firebase init, State, data loading, balance accessors
+        ├── shared-balances.js    # Single source of truth for all balance math
+        ├── shared.js             # Shared UI utilities used across page modules
+        ├── smart-loader.js       # Incremental + layered data loading strategy
+        ├── summary-loader.js     # Pre-computed summary fetching and caching
+        ├── idb-storage.js        # IndexedDB persistence layer
+        ├── pages.js              # Top-level page router
+        │
+        ├── dashboard.js          # Live KPIs, alerts, pending approvals
+        ├── rm.js                 # Raw Material intake and lot management
+        ├── soft.js               # Softening stage entries
+        ├── dye.js                # Dye lot management (multi-source, split, recycle)
+        ├── wind.js               # Winding entries
+        ├── pack.js               # Packing entries
+        ├── dispatch.js           # Dispatch (single + multi-lot)
+        ├── stock.js              # Live stock view across all stages
+        ├── approval.js           # Supervisor approval queue
+        ├── wip.js                # Work In Progress tracker
+        ├── stockregister.js      # Ledger-style running totals
+        ├── lifecycle.js          # Full RM lot lifecycle trace
+        ├── dyelifecycle.js       # Dye lot lifecycle trace
+        ├── analytics.js          # Charts and throughput analytics
+        ├── reports.js            # Tabular reports (waste, grade, pack)
+        ├── challan.js            # Challan lookup and generation
+        ├── party.js              # Customer/party tracker
+        ├── vendor.js             # Vendor balance summary
+        ├── editlog.js            # Audit trail of all edits and voids
+        ├── search.js             # Global search across all stages
+        ├── masters.js            # Admin: grades, vendors, mills, machines, workers
+        ├── users.js              # Admin: user accounts and roles
+        ├── recyclesoft.js        # Residual/Scrap transfer management
+        ├── admin-tools.js        # Admin utilities and system tools
+        ├── worker-view.js        # Worker-facing simplified view
+        └── backup-export.js      # Manual backup trigger + Excel/Power BI export
 ```
 
 ---
@@ -96,6 +135,12 @@ All data lives under `/tc/` in Firebase Realtime Database.
 - `windEntries` — Winding entries
 - `packEntries` — Packing entries
 - `dispatches` — Dispatch records
+
+**Log tables:**
+- `residualLog` — Residual/Scrap transfers out of Soft balance
+- `rmReturnLog` — RM returned to vendor
+- `voidLog` / `editLog` — Full audit trail
+- `lotFlags` / `dyeLotFlags` / `entryFlags` — Flag system per stage
 
 **Archive:** `/tc/archive/...` — fully dispatched lots move here automatically.
 
@@ -157,10 +202,29 @@ Neither step triggers the other.
 
 ## 🔐 Security
 
-- All API calls require a signed Bearer session token (issued on login, verified server-side)
+- All API calls require a signed Bearer session token stored in an **HttpOnly cookie** — JavaScript cannot read it
+- Login protected by **Turnstile CAPTCHA** and **escalating rate limiting** (role-based strictness, 30-day memory)
+- **CORS** restricted to the app's two real domains only — no cross-origin requests accepted
 - `/tc/users` is blocked from all client reads by Firebase rules — only the Worker can access it via admin secret
 - Firebase API keys in `core.js` are **public by design** (standard Firebase web SDK pattern) — real security is enforced by Firebase Rules
 - The Firebase Database Secret is loaded from Cloudflare environment secrets at runtime — never hardcoded in source
+
+---
+
+## 🧪 Quality & Verification
+
+`tc_predeploy_check.py` runs a **6-layer, 666-check** verification suite before every deploy:
+
+| Layer | What it checks |
+|---|---|
+| 1 | Static pattern checks across all JS files |
+| 2 | Function presence in correct module files |
+| 3 | AST-level syntax and structure validation |
+| 4 | Balance formula correctness with test numbers |
+| 5 | Randomised scenario generation (hundreds per law) |
+| 6 | Client vs Worker cross-check on balance results |
+
+`tc_smoke_test.js` (Playwright) clicks through the real deployed app — login, every major page, all key workflows — against a real staging environment.
 
 ---
 
